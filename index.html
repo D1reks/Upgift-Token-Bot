@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>UPGIFT • Предрегистрация</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="logo-section">
+                <img src="images/logo.png" alt="UPGIFT" class="logo" onerror="this.style.display='none'">
+            </div>
+            <div class="title-section">
+                <h1 class="title">UPGIFT</h1>
+                <p class="subtitle">Новый проект уже на подходе</p>
+            </div>
+            <div class="button-section">
+                <button class="preregister-btn" id="preregisterBtn" disabled>
+                    <span class="btn-text" id="btnText">Предрегистрация</span>
+                    <span class="btn-loader" id="btnLoader" style="display:none;"></span>
+                </button>
+                <p class="requirement-text" id="requirementText">
+                    Минимальный депозит для участия: 1,000 ⭐
+                </p>
+            </div>
+            <div class="status-section" id="statusSection" style="display:none;">
+                <div class="status-icon" id="statusIcon"></div>
+                <p class="status-text" id="statusText"></p>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>

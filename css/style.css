@@ -1,0 +1,213 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+}
+
+body {
+    background: #000;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
+}
+
+#app {
+    width: 100%;
+    max-width: 450px;
+    height: 100vh;
+    height: 100dvh;
+    background: url('back.png') center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px 24px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+/* ==================== ЛОГОТИП ==================== */
+
+.logo-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+}
+
+/* ==================== ЗАГОЛОВОК ==================== */
+
+.title-section {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.title {
+    color: #ffffff;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
+}
+
+.subtitle {
+    color: #a0b4e0;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+/* ==================== КНОПКА ==================== */
+
+.button-section {
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.preregister-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: #ffffff;
+    color: #0a0f1a;
+    transition: all 0.25s;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(255, 255, 255, 0.1);
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+}
+
+.preregister-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+}
+
+.preregister-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.preregister-btn.success {
+    background: linear-gradient(135deg, #00E77A, #00FBDD);
+    color: #0a0f1a;
+    box-shadow: 0 0 30px rgba(0, 231, 122, 0.4);
+}
+
+.preregister-btn.error {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #ffffff;
+    box-shadow: 0 0 30px rgba(231, 76, 60, 0.4);
+}
+
+.btn-text {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-loader {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #0a0f1a;
+    border-radius: 50%;
+    animation: btn-spin 0.7s linear infinite;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes btn-spin {
+    to { transform: rotate(360deg); }
+}
+
+.requirement-text {
+    color: #6b7daa;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* ==================== СТАТУС ==================== */
+
+.status-section {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.status-icon.success {
+    background: rgba(0, 231, 122, 0.2);
+    color: #00E77A;
+}
+
+.status-icon.error {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.status-text {
+    color: #d0daf0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.status-text.success {
+    color: #00E77A;
+}
+
+.status-text.error {
+    color: #e74c3c;
+}
