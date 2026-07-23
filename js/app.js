@@ -139,3 +139,44 @@ class PreregisterApp {
 document.addEventListener('DOMContentLoaded', () => {
     const app = new PreregisterApp();
 });
+
+// ==================== НАВИГАЦИЯ МЕЖДУ ЭКРАНАМИ ====================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const mainScreen = document.getElementById('app');
+    const infoScreen = document.getElementById('infoScreen');
+    const scrollDownArrow = document.getElementById('scrollDownArrow');
+    const scrollUpArrow = document.getElementById('scrollUpArrow');
+    
+    if (scrollDownArrow) {
+        scrollDownArrow.addEventListener('click', () => {
+            // Скрываем первый экран вверх
+            mainScreen.classList.add('hidden-up');
+            mainScreen.classList.remove('active');
+            
+            // Показываем второй экран
+            infoScreen.classList.add('active');
+            
+            // Отдаляем камеру
+            if (typeof window.zoomOutCamera === 'function') {
+                window.zoomOutCamera();
+            }
+        });
+    }
+    
+    if (scrollUpArrow) {
+        scrollUpArrow.addEventListener('click', () => {
+            // Показываем первый экран
+            mainScreen.classList.remove('hidden-up');
+            mainScreen.classList.add('active');
+            
+            // Скрываем второй экран
+            infoScreen.classList.remove('active');
+            
+            // Приближаем камеру
+            if (typeof window.zoomInCamera === 'function') {
+                window.zoomInCamera();
+            }
+        });
+    }
+});

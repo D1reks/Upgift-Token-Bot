@@ -22,12 +22,11 @@ function initBackground() {
         stage.appendChild(renderer.domElement);
     }
 
-    // L I G H T — оранжево-жёлтый
+    // L I G H T
     bulp = new THREE.PointLight(0xf0883e, 1.5, 50);
     bulp.position.set(0, 0, 8);
     scene.add(bulp);
 
-    // Второй источник света для объёма
     const ambientLight = new THREE.AmbientLight(0xf5c842, 0.3);
     scene.add(ambientLight);
 
@@ -35,7 +34,7 @@ function initBackground() {
     system = new THREE.Group();
     scene.add(system);
 
-    // 🔥 СВЕЧЕНИЕ ВОКРУГ ОКТАЭДРА (Glow Sphere)
+    // GLOW SPHERE
     const glowGeometry = new THREE.SphereGeometry(11, 32, 32);
     const glowMaterial = new THREE.ShaderMaterial({
         uniforms: {
@@ -72,7 +71,7 @@ function initBackground() {
     glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
     system.add(glowSphere);
 
-    // G E M — оранжево-жёлтый wireframe
+    // G E M
     const gemMaterial = new THREE.MeshBasicMaterial({
         wireframe: true,
         color: 0xf5c842,
@@ -86,7 +85,7 @@ function initBackground() {
     );
     system.add(gem);
 
-    // P O I N T S — золотые точки на вершинах
+    // P O I N T S
     const positions = gem.geometry.attributes.position;
     const pointMaterial = new THREE.MeshStandardMaterial({
         color: 0xffd700,
@@ -110,7 +109,7 @@ function initBackground() {
         system.add(point);
     }
 
-    // 🔥 ДОПОЛНИТЕЛЬНЫЕ ЧАСТИЦЫ ВОКРУГ (орбита)
+    // P A R T I C L E S
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesCount = 60;
     const particlesPositions = new Float32Array(particlesCount * 3);
@@ -139,7 +138,7 @@ function initBackground() {
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     system.add(particles);
 
-    // A N I M A T I O N — вращение системы
+    // A N I M A T I O N
     gsap.to(system.rotation, {
         ease: "none",
         x: Math.PI * 2,
@@ -148,7 +147,6 @@ function initBackground() {
         repeat: -1
     });
 
-    // Вращение частиц в обратную сторону
     gsap.to(particles.rotation, {
         ease: "none",
         y: -Math.PI * 2,
@@ -156,7 +154,6 @@ function initBackground() {
         repeat: -1
     });
 
-    // G L O W — пульсация свечения
     gsap.to(bulp, {
         ease: "none",
         intensity: 0.5,
@@ -173,7 +170,6 @@ function initBackground() {
         yoyo: true
     });
 
-    // Пульсация свечения
     gsap.to(glowMaterial.uniforms.uOpacity, {
         ease: "none",
         value: 0.5,
@@ -182,12 +178,28 @@ function initBackground() {
         yoyo: true
     });
 
-    // Обновление времени для шейдера
     function updateGlow() {
         glowMaterial.uniforms.uTime.value += 0.016;
         requestAnimationFrame(updateGlow);
     }
     updateGlow();
+
+    // 🔥 ФУНКЦИЯ ОТДАЛЕНИЯ/ПРИБЛИЖЕНИЯ КАМЕРЫ
+    window.zoomOutCamera = function() {
+        gsap.to(camera.position, {
+            z: 300,
+            duration: 1.2,
+            ease: "power2.inOut"
+        });
+    };
+    
+    window.zoomInCamera = function() {
+        gsap.to(camera.position, {
+            z: 150,
+            duration: 1.2,
+            ease: "power2.inOut"
+        });
+    };
 
     // R E S I Z E
     window.addEventListener('resize', () => {
@@ -204,5 +216,4 @@ function initBackground() {
     render();
 }
 
-// Запускаем после загрузки
 document.addEventListener('DOMContentLoaded', initBackground);

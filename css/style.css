@@ -286,3 +286,164 @@ body {
     font-weight: 500;
     line-height: 1.5;
 }
+
+/* ==================== ДВА ЭКРАНА ==================== */
+
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.screen.active {
+    pointer-events: all;
+}
+
+.screen .container,
+.screen .info-container {
+    pointer-events: all;
+}
+
+/* Экран 1 — видимый */
+#app {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Экран 1 — скрыт вверх */
+#app.hidden-up {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Экран 2 — скрыт снизу */
+#infoScreen {
+    transform: translateY(100%);
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Экран 2 — видимый */
+#infoScreen.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ==================== СТРЕЛКИ ==================== */
+
+.scroll-arrow {
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: arrow-bounce 2s ease-in-out infinite;
+}
+
+.scroll-arrow:active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.scroll-arrow.down {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.scroll-arrow.up {
+    margin-bottom: 40px;
+}
+
+@keyframes arrow-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+}
+
+.scroll-arrow.up {
+    animation: arrow-bounce-up 2s ease-in-out infinite;
+}
+
+@keyframes arrow-bounce-up {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* ==================== ЭКРАН ИНФОРМАЦИИ ==================== */
+
+.info-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.info-title {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.info-list {
+    list-style: none;
+    counter-reset: item;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+}
+
+.info-list li {
+    counter-increment: item;
+    color: #d0daf0;
+    font-size: 14px;
+    line-height: 1.6;
+    padding-left: 28px;
+    position: relative;
+}
+
+.info-list li::before {
+    content: counter(item);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f0883e, #f5c842);
+    color: #0a0f1a;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.info-coming-soon {
+    color: #6b7daa;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 8px;
+}
