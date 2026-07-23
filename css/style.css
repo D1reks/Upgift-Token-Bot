@@ -405,7 +405,6 @@ body {
 
 .info-list {
     list-style: none;
-    counter-reset: item;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -413,12 +412,9 @@ body {
 }
 
 .info-list li {
-    counter-increment: item;
     color: #d0daf0;
     font-size: 14px;
     line-height: 1.6;
-    padding-left: 28px;
-    position: relative;
 }
 
 .info-list li::before {
