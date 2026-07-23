@@ -1,6 +1,6 @@
-// ==================== 3D АНИМИРОВАННЫЙ ФОН ====================
+// ==================== 3D АНИМИРОВАННЫЙ ФОН СО СВЕЧЕНИЕМ ====================
 
-let scene, camera, renderer, system, bulp;
+let scene, camera, renderer, system, bulp, glowSphere;
 
 function initBackground() {
     // S C E N E
@@ -15,6 +15,7 @@ function initBackground() {
     // R E N D E R E R
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     
     const stage = document.querySelector('[data-js="stage"]');
     if (stage) {
@@ -22,20 +23,61 @@ function initBackground() {
     }
 
     // L I G H T — оранжево-жёлтый
-    bulp = new THREE.PointLight(0xf0883e, 1, 10000);
-    bulp.position.set(0, 0, 5);
+    bulp = new THREE.PointLight(0xf0883e, 1.5, 50);
+    bulp.position.set(0, 0, 8);
     scene.add(bulp);
+
+    // Второй источник света для объёма
+    const ambientLight = new THREE.AmbientLight(0xf5c842, 0.3);
+    scene.add(ambientLight);
 
     // S Y S T E M
     system = new THREE.Group();
     scene.add(system);
+
+    // 🔥 СВЕЧЕНИЕ ВОКРУГ ОКТАЭДРА (Glow Sphere)
+    const glowGeometry = new THREE.SphereGeometry(11, 32, 32);
+    const glowMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            uTime: { value: 0 },
+            uColor: { value: new THREE.Color('#f0883e') },
+            uOpacity: { value: 0.3 }
+        },
+        vertexShader: `
+            varying vec3 vNormal;
+            varying vec3 vPosition;
+            void main() {
+                vNormal = normalize(normalMatrix * normal);
+                vPosition = position;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            varying vec3 vNormal;
+            varying vec3 vPosition;
+            uniform float uTime;
+            uniform vec3 uColor;
+            uniform float uOpacity;
+            void main() {
+                float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.5);
+                float pulse = 1.0 + sin(uTime * 2.0) * 0.3;
+                gl_FragColor = vec4(uColor, intensity * uOpacity * pulse);
+            }
+        `,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    
+    glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
+    system.add(glowSphere);
 
     // G E M — оранжево-жёлтый wireframe
     const gemMaterial = new THREE.MeshBasicMaterial({
         wireframe: true,
         color: 0xf5c842,
         transparent: true,
-        opacity: 0.15
+        opacity: 0.2
     });
 
     const gem = new THREE.Mesh(
@@ -44,10 +86,14 @@ function initBackground() {
     );
     system.add(gem);
 
-    // P O I N T S — белые точки на вершинах
+    // P O I N T S — золотые точки на вершинах
     const positions = gem.geometry.attributes.position;
-    const pointMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffd700
+    const pointMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffd700,
+        emissive: 0xffd700,
+        emissiveIntensity: 0.8,
+        roughness: 0.3,
+        metalness: 0.5
     });
 
     for (let i = 0; i < positions.count; i++) {
@@ -64,11 +110,48 @@ function initBackground() {
         system.add(point);
     }
 
-    // A N I M A T I O N — вращение
+    // 🔥 ДОПОЛНИТЕЛЬНЫЕ ЧАСТИЦЫ ВОКРУГ (орбита)
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 60;
+    const particlesPositions = new Float32Array(particlesCount * 3);
+    
+    for (let i = 0; i < particlesCount; i++) {
+        const angle = (i / particlesCount) * Math.PI * 2;
+        const radius = 12 + Math.random() * 3;
+        const height = (Math.random() - 0.5) * 8;
+        
+        particlesPositions[i * 3] = Math.cos(angle) * radius;
+        particlesPositions[i * 3 + 1] = height;
+        particlesPositions[i * 3 + 2] = Math.sin(angle) * radius;
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlesPositions, 3));
+    
+    const particlesMaterial = new THREE.PointsMaterial({
+        color: 0xf5c842,
+        size: 0.3,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    system.add(particles);
+
+    // A N I M A T I O N — вращение системы
     gsap.to(system.rotation, {
         ease: "none",
         x: Math.PI * 2,
         y: Math.PI * 2,
+        duration: 20,
+        repeat: -1
+    });
+
+    // Вращение частиц в обратную сторону
+    gsap.to(particles.rotation, {
+        ease: "none",
+        y: -Math.PI * 2,
         duration: 15,
         repeat: -1
     });
@@ -76,7 +159,7 @@ function initBackground() {
     // G L O W — пульсация свечения
     gsap.to(bulp, {
         ease: "none",
-        intensity: 0.3,
+        intensity: 0.5,
         duration: 2,
         repeat: -1,
         yoyo: true
@@ -84,11 +167,27 @@ function initBackground() {
 
     gsap.to(gemMaterial, {
         ease: "none",
-        opacity: 0.05,
+        opacity: 0.08,
         duration: 2,
         repeat: -1,
         yoyo: true
     });
+
+    // Пульсация свечения
+    gsap.to(glowMaterial.uniforms.uOpacity, {
+        ease: "none",
+        value: 0.5,
+        duration: 2.5,
+        repeat: -1,
+        yoyo: true
+    });
+
+    // Обновление времени для шейдера
+    function updateGlow() {
+        glowMaterial.uniforms.uTime.value += 0.016;
+        requestAnimationFrame(updateGlow);
+    }
+    updateGlow();
 
     // R E S I Z E
     window.addEventListener('resize', () => {
