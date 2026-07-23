@@ -407,32 +407,16 @@ body {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
     padding: 0;
+    width: 100%;
 }
 
 .info-list li {
     color: #d0daf0;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.info-list li::before {
-    content: counter(item);
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f0883e, #f5c842);
-    color: #0a0f1a;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    font-size: 15px;
+    line-height: 1.7;
+    text-align: center;
 }
 
 .info-coming-soon {
@@ -441,5 +425,6 @@ body {
     font-weight: 500;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-top: 8px;
+    margin-top: 12px;
+    text-align: center;
 }
