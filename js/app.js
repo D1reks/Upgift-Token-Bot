@@ -95,9 +95,7 @@ class PreregisterApp {
                     this.setRegistered();
                 }
             }
-        } catch (e) {
-            // Ошибка сети — кнопка остаётся активной
-        }
+        } catch (e) {}
     }
     
     async handlePreregister() {
