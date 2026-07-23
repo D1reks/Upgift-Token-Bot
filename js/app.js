@@ -42,8 +42,11 @@ class PreregisterApp {
             return;
         }
         
+        // 🔥 Сначала включаем кнопку, потом проверяем статус
         this.btn.disabled = false;
         this.btn.addEventListener('click', () => this.handlePreregister());
+        
+        // Проверяем статус асинхронно
         this.checkStatus();
     }
     
@@ -52,7 +55,9 @@ class PreregisterApp {
             this.btn.disabled = true;
             this.btnText.textContent = 'Загрузка...';
             this.btnLoader.style.display = 'inline-block';
-        } else {
+        } else if (!this.isRegistered) {
+            // 🔥 Возвращаем кнопку только если не зарегистрирован
+            this.btn.disabled = false;
             this.btnText.textContent = 'Предрегистрация';
             this.btnLoader.style.display = 'none';
         }
@@ -68,8 +73,10 @@ class PreregisterApp {
     }
     
     showStatus(text) {
-        this.statusSection.style.display = 'block';
-        this.statusText.textContent = text;
+        if (this.statusSection && this.statusText) {
+            this.statusSection.style.display = 'block';
+            this.statusText.textContent = text;
+        }
     }
     
     async checkStatus() {
@@ -91,9 +98,13 @@ class PreregisterApp {
                 if (d.registered) {
                     this.setRegistered();
                 }
+            } else {
+                // Если ошибка — просто оставляем кнопку активной
+                console.error('Status check failed:', r.status);
             }
         } catch (e) {
-            // Молча игнорируем
+            // Ошибка сети — кнопка остаётся активной
+            console.error('Status check error:', e);
         }
     }
     
@@ -124,19 +135,18 @@ class PreregisterApp {
                 this.setRegistered();
             } else {
                 this.showStatus('Вы не соответствуете критериям для предрегистрации');
-                this.btn.disabled = false;
-                this.btnText.textContent = 'Предрегистрация';
-                this.btnLoader.style.display = 'none';
+                this.setLoading(false);
             }
         } catch (e) {
             this.showStatus('Ошибка соединения');
-            this.btn.disabled = false;
-            this.btnText.textContent = 'Предрегистрация';
-            this.btnLoader.style.display = 'none';
+            this.setLoading(false);
         }
     }
 }
 
 // ==================== ЗАПУСК ====================
 
-const app = new PreregisterApp();
+// 🔥 Дожидаемся загрузки DOM
+document.addEventListener('DOMContentLoaded', () => {
+    const app = new PreregisterApp();
+});
