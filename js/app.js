@@ -42,11 +42,8 @@ class PreregisterApp {
             return;
         }
         
-        // 🔥 Сначала включаем кнопку, потом проверяем статус
         this.btn.disabled = false;
         this.btn.addEventListener('click', () => this.handlePreregister());
-        
-        // Проверяем статус асинхронно
         this.checkStatus();
     }
     
@@ -56,7 +53,6 @@ class PreregisterApp {
             this.btnText.textContent = 'Загрузка...';
             this.btnLoader.style.display = 'inline-block';
         } else if (!this.isRegistered) {
-            // 🔥 Возвращаем кнопку только если не зарегистрирован
             this.btn.disabled = false;
             this.btnText.textContent = 'Предрегистрация';
             this.btnLoader.style.display = 'none';
@@ -66,7 +62,7 @@ class PreregisterApp {
     setRegistered() {
         this.isRegistered = true;
         this.btn.className = 'preregister-btn registered';
-        this.btnText.textContent = 'Предрегистрация';
+        this.btnText.textContent = 'Вы зарегистрированы';
         this.btn.disabled = true;
         this.btnLoader.style.display = 'none';
         this.statusSection.style.display = 'none';
@@ -98,13 +94,9 @@ class PreregisterApp {
                 if (d.registered) {
                     this.setRegistered();
                 }
-            } else {
-                // Если ошибка — просто оставляем кнопку активной
-                console.error('Status check failed:', r.status);
             }
         } catch (e) {
             // Ошибка сети — кнопка остаётся активной
-            console.error('Status check error:', e);
         }
     }
     
@@ -146,7 +138,6 @@ class PreregisterApp {
 
 // ==================== ЗАПУСК ====================
 
-// 🔥 Дожидаемся загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
     const app = new PreregisterApp();
 });
