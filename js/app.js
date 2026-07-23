@@ -19,13 +19,9 @@ class PreregisterApp {
         this.btnText = document.getElementById('btnText');
         this.btnLoader = document.getElementById('btnLoader');
         this.statusSection = document.getElementById('statusSection');
-        this.statusIcon = document.getElementById('statusIcon');
         this.statusText = document.getElementById('statusText');
-        this.requirementText = document.getElementById('requirementText');
         
         this.userId = null;
-        this.username = null;
-        this.totalDeposit = 0;
         this.isRegistered = false;
         
         this.init();
@@ -33,7 +29,7 @@ class PreregisterApp {
     
     init() {
         if (!tg?.initData) {
-            this.showError('Приложение доступно только в Telegram');
+            this.showStatus('Приложение доступно только в Telegram');
             return;
         }
         
@@ -41,13 +37,11 @@ class PreregisterApp {
             const params = new URLSearchParams(tg.initData);
             const user = JSON.parse(params.get('user'));
             this.userId = user.id;
-            this.username = user.username || `id${user.id}`;
         } catch (e) {
-            this.showError('Ошибка авторизации');
+            this.showStatus('Ошибка авторизации');
             return;
         }
         
-        // Включаем кнопку и проверяем статус
         this.btn.disabled = false;
         this.btn.addEventListener('click', () => this.handlePreregister());
         this.checkStatus();
@@ -59,29 +53,22 @@ class PreregisterApp {
             this.btnText.textContent = 'Загрузка...';
             this.btnLoader.style.display = 'inline-block';
         } else {
-            this.btn.disabled = false;
             this.btnText.textContent = 'Предрегистрация';
             this.btnLoader.style.display = 'none';
         }
     }
     
-    showSuccess(text) {
-        this.statusSection.style.display = 'flex';
-        this.statusIcon.className = 'status-icon success';
-        this.statusIcon.textContent = '✓';
-        this.statusText.className = 'status-text success';
-        this.statusText.textContent = text;
-        this.btn.className = 'preregister-btn success';
-        this.btnText.textContent = '✓ Вы зарегистрированы';
+    setRegistered() {
+        this.isRegistered = true;
+        this.btn.className = 'preregister-btn registered';
+        this.btnText.textContent = 'Предрегистрация';
         this.btn.disabled = true;
-        this.requirementText.style.display = 'none';
+        this.btnLoader.style.display = 'none';
+        this.statusSection.style.display = 'none';
     }
     
-    showError(text) {
-        this.statusSection.style.display = 'flex';
-        this.statusIcon.className = 'status-icon error';
-        this.statusIcon.textContent = '✗';
-        this.statusText.className = 'status-text error';
+    showStatus(text) {
+        this.statusSection.style.display = 'block';
         this.statusText.textContent = text;
     }
     
@@ -100,24 +87,19 @@ class PreregisterApp {
             
             if (r.ok) {
                 const d = await r.json();
-                this.totalDeposit = d.totalDeposit || 0;
                 
                 if (d.registered) {
-                    this.isRegistered = true;
-                    this.showSuccess(`Вы успешно зарегистрированы!\nВаш депозит: ${d.totalDeposit.toLocaleString()} ⭐`);
-                } else {
-                    this.requirementText.textContent = 
-                        `Минимальный депозит: 1,000 ⭐\nВаш депозит: ${this.totalDeposit.toLocaleString()} ⭐`;
+                    this.setRegistered();
                 }
             }
         } catch (e) {
-            // Молча игнорируем ошибку при загрузке
+            // Молча игнорируем
         }
     }
     
     async handlePreregister() {
         if (!tg?.initData) {
-            this.showError('Приложение доступно только в Telegram');
+            this.showStatus('Приложение доступно только в Telegram');
             return;
         }
         
@@ -139,48 +121,19 @@ class PreregisterApp {
             const d = await r.json();
             
             if (d.success) {
-                this.isRegistered = true;
-                this.showSuccess(`Успешная регистрация!\nВаш депозит: ${d.totalDeposit.toLocaleString()} ⭐`);
+                this.setRegistered();
             } else {
-                this.btn.className = 'preregister-btn error';
-                this.btnText.textContent = 'Недостаточно депозита';
-                
-                if (d.totalDeposit !== undefined) {
-                    this.totalDeposit = d.totalDeposit;
-                    const remaining = Math.max(0, 1000 - d.totalDeposit);
-                    this.showError(
-                        `Недостаточно депозита\n` +
-                        `Ваш депозит: ${d.totalDeposit.toLocaleString()} ⭐\n` +
-                        `Осталось: ${remaining.toLocaleString()} ⭐`
-                    );
-                    this.requirementText.textContent = 
-                        `Минимальный депозит: 1,000 ⭐\nВаш депозит: ${this.totalDeposit.toLocaleString()} ⭐`;
-                } else {
-                    this.showError(d.error || 'Ошибка регистрации');
-                }
-                
-                // Возвращаем кнопку через 3 секунды
-                setTimeout(() => {
-                    if (!this.isRegistered) {
-                        this.btn.className = 'preregister-btn';
-                        this.btnText.textContent = 'Предрегистрация';
-                        this.statusSection.style.display = 'none';
-                    }
-                }, 3000);
+                this.showStatus('Вы не соответствуете критериям для предрегистрации');
+                this.btn.disabled = false;
+                this.btnText.textContent = 'Предрегистрация';
+                this.btnLoader.style.display = 'none';
             }
         } catch (e) {
-            this.showError('Ошибка соединения');
-            
-            setTimeout(() => {
-                if (!this.isRegistered) {
-                    this.btn.className = 'preregister-btn';
-                    this.btnText.textContent = 'Предрегистрация';
-                    this.statusSection.style.display = 'none';
-                }
-            }, 3000);
+            this.showStatus('Ошибка соединения');
+            this.btn.disabled = false;
+            this.btnText.textContent = 'Предрегистрация';
+            this.btnLoader.style.display = 'none';
         }
-        
-        this.setLoading(false);
     }
 }
 

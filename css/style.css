@@ -24,7 +24,7 @@ body {
     max-width: 450px;
     height: 100vh;
     height: 100dvh;
-    background: url('back.png') center/cover no-repeat;
+    background: url('../back.png') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -37,51 +37,74 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 24px;
     padding: 40px 24px;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
 }
 
-/* ==================== ЛОГОТИП ==================== */
+/* ==================== АНИМАЦИИ ПОЯВЛЕНИЯ ==================== */
 
 .logo-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.logo {
-    width: 120px;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+.subtitle-section {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
+
+.button-section {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+}
+
+.status-section {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ==================== ЗАГОЛОВОК ==================== */
 
-.title-section {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
 .title {
     color: #ffffff;
-    font-size: 36px;
+    font-size: 42px;
     font-weight: 800;
-    letter-spacing: 4px;
+    letter-spacing: 6px;
     text-transform: uppercase;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 215, 0, 0.3);
+    text-align: center;
+}
+
+/* ==================== ПОДЗАГОЛОВОК ==================== */
+
+.subtitle-section {
+    text-align: center;
 }
 
 .subtitle {
     color: #a0b4e0;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
 }
 
 /* ==================== КНОПКА ==================== */
@@ -90,9 +113,7 @@ body {
     width: 100%;
     max-width: 300px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    justify-content: center;
 }
 
 .preregister-btn {
@@ -107,14 +128,13 @@ body {
     letter-spacing: 2px;
     background: #ffffff;
     color: #0a0f1a;
-    transition: all 0.25s;
+    transition: all 0.3s ease;
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(255, 255, 255, 0.1);
     -webkit-tap-highlight-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    position: relative;
 }
 
 .preregister-btn:active {
@@ -128,16 +148,16 @@ body {
     box-shadow: none;
 }
 
-.preregister-btn.success {
+.preregister-btn.registered {
     background: linear-gradient(135deg, #00E77A, #00FBDD);
     color: #0a0f1a;
     box-shadow: 0 0 30px rgba(0, 231, 122, 0.4);
+    opacity: 1;
 }
 
-.preregister-btn.error {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    color: #ffffff;
-    box-shadow: 0 0 30px rgba(231, 76, 60, 0.4);
+.preregister-btn.registered:disabled {
+    opacity: 1;
+    cursor: default;
 }
 
 .btn-text {
@@ -152,62 +172,22 @@ body {
     border-top-color: #0a0f1a;
     border-radius: 50%;
     animation: btn-spin 0.7s linear infinite;
-    position: relative;
-    z-index: 1;
 }
 
 @keyframes btn-spin {
     to { transform: rotate(360deg); }
 }
 
-.requirement-text {
-    color: #6b7daa;
-    font-size: 12px;
-    text-align: center;
-    line-height: 1.4;
-}
-
 /* ==================== СТАТУС ==================== */
 
 .status-section {
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-}
-
-.status-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
-
-.status-icon.success {
-    background: rgba(0, 231, 122, 0.2);
-    color: #00E77A;
-}
-
-.status-icon.error {
-    background: rgba(231, 76, 60, 0.2);
-    color: #e74c3c;
+    max-width: 280px;
 }
 
 .status-text {
-    color: #d0daf0;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.5;
-}
-
-.status-text.success {
-    color: #00E77A;
-}
-
-.status-text.error {
     color: #e74c3c;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
 }
