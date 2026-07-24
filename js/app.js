@@ -24,67 +24,61 @@ if (window.Telegram && window.Telegram.WebApp) {
 // ==================== НАВИГАЦИЯ МЕЖДУ ЭКРАНАМИ ====================
 
 let currentScreen = 'app';
+let isTransitioning = false;
 
-function switchScreen(targetId) {
-    if (targetId === currentScreen) return;
+async function switchScreen(targetId) {
+    if (targetId === currentScreen || isTransitioning) return;
+    isTransitioning = true;
     
     const currentEl = document.getElementById(currentScreen);
     const targetEl = document.getElementById(targetId);
     
-    if (!currentEl || !targetEl) return;
-    
-    const isGoingDown = targetId === 'infoScreen';
-    
-    // Начальные позиции
-    if (isGoingDown) {
-        // Текущий уходит вверх
-        currentEl.style.transform = 'translateY(0)';
-        currentEl.style.opacity = '1';
-        // Целевой снизу
-        targetEl.style.transform = 'translateY(100%)';
-        targetEl.style.opacity = '0';
-    } else {
-        // Текущий уходит вниз
-        currentEl.style.transform = 'translateY(0)';
-        currentEl.style.opacity = '1';
-        // Целевой сверху
-        targetEl.style.transform = 'translateY(-100%)';
-        targetEl.style.opacity = '0';
+    if (!currentEl || !targetEl) {
+        isTransitioning = false;
+        return;
     }
     
-    // Показываем целевой экран
+    // 🔥 Отдаляем камеру (куб уходит вглубь)
+    if (typeof window.zoomOutCamera === 'function') {
+        await window.zoomOutCamera();
+    }
+    
+    // Плавно скрываем текущий UI
+    currentEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    currentEl.style.opacity = '0';
+    currentEl.style.transform = 'scale(0.95)';
+    
+    await new Promise(r => setTimeout(r, 400));
+    
+    // Меняем экраны
+    currentEl.classList.remove('active');
+    currentEl.style.display = 'none';
+    currentEl.style.transition = '';
+    currentEl.style.transform = '';
+    
+    // Показываем новый UI
     targetEl.classList.add('active');
     targetEl.style.display = 'flex';
+    targetEl.style.opacity = '0';
+    targetEl.style.transform = 'scale(1.05)';
+    targetEl.style.transition = 'none';
     
-    // Запускаем анимацию
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            // Добавляем transition
-            currentEl.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease';
-            targetEl.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease';
-            
-            if (isGoingDown) {
-                currentEl.style.transform = 'translateY(-100%)';
-                currentEl.style.opacity = '0';
-                targetEl.style.transform = 'translateY(0)';
-                targetEl.style.opacity = '1';
-            } else {
-                currentEl.style.transform = 'translateY(100%)';
-                currentEl.style.opacity = '0';
-                targetEl.style.transform = 'translateY(0)';
-                targetEl.style.opacity = '1';
-            }
-        });
-    });
+    targetEl.offsetHeight; // Форсируем рефлоу
     
-    // После анимации скрываем старый экран
-    setTimeout(() => {
-        currentEl.classList.remove('active');
-        currentEl.style.display = 'none';
-        currentEl.style.transition = '';
-        targetEl.style.transition = '';
-        currentScreen = targetId;
-    }, 600);
+    targetEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    targetEl.style.opacity = '1';
+    targetEl.style.transform = 'scale(1)';
+    
+    await new Promise(r => setTimeout(r, 500));
+    
+    // 🔥 Приближаем камеру обратно
+    if (typeof window.zoomInCamera === 'function') {
+        await window.zoomInCamera();
+    }
+    
+    targetEl.style.transition = '';
+    currentScreen = targetId;
+    isTransitioning = false;
 }
 
 // ==================== ПРИЛОЖЕНИЕ ====================

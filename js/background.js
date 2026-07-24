@@ -184,20 +184,26 @@ function initBackground() {
     }
     updateGlow();
 
-    // 🔥 ФУНКЦИЯ ОТДАЛЕНИЯ/ПРИБЛИЖЕНИЯ КАМЕРЫ
+    // 🔥 ФУНКЦИИ ДЛЯ ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ
     window.zoomOutCamera = function() {
-        gsap.to(camera.position, {
-            z: 300,
-            duration: 1.2,
-            ease: "power2.inOut"
+        return new Promise((resolve) => {
+            gsap.to(camera.position, {
+                z: 300,
+                duration: 1.2,
+                ease: "power2.inOut",
+                onComplete: resolve
+            });
         });
     };
     
     window.zoomInCamera = function() {
-        gsap.to(camera.position, {
-            z: 150,
-            duration: 1.2,
-            ease: "power2.inOut"
+        return new Promise((resolve) => {
+            gsap.to(camera.position, {
+                z: 150,
+                duration: 1.2,
+                ease: "power2.inOut",
+                onComplete: resolve
+            });
         });
     };
 
