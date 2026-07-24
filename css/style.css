@@ -23,30 +23,59 @@ body {
     align-items: center;
 }
 
-#app {
+/* 3D фон на весь экран */
+#stage {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Основной контейнер — ограничен по ширине */
+#main-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 450px;
     height: 100vh;
     height: 100dvh;
-    max-width: 100%;
-    background: url('../back.png') center/cover no-repeat;
-    display: flex;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+/* Экраны */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
     flex-direction: column;
-    position: relative;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Экран 1 */
+#app {
+    background: transparent;
 }
 
 .container {
     width: 100%;
-    height: 100vh;
-    height: 100dvh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 24px;
     padding: 40px 24px;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
 }
 
 /* ==================== ЛОГОТИП ==================== */
@@ -57,29 +86,24 @@ body {
     align-items: center;
 }
 
-.logo {
-    width: 120px;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
-}
-
-/* ==================== ЗАГОЛОВОК ==================== */
-
-.title-section {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.title {
+.glowing-title {
     color: #ffffff;
-    font-size: 36px;
+    font-size: 42px;
     font-weight: 800;
-    letter-spacing: 4px;
+    letter-spacing: 6px;
     text-transform: uppercase;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
+}
+
+.letter-p {
+    color: #ffd700;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
+/* ==================== ПОДЗАГОЛОВОК ==================== */
+
+.subtitle-section {
+    text-align: center;
 }
 
 .subtitle {
@@ -87,6 +111,7 @@ body {
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 1px;
+    line-height: 1.4;
 }
 
 /* ==================== КНОПКА ==================== */
@@ -165,13 +190,6 @@ body {
     to { transform: rotate(360deg); }
 }
 
-.requirement-text {
-    color: #6b7daa;
-    font-size: 12px;
-    text-align: center;
-    line-height: 1.4;
-}
-
 /* ==================== СТАТУС ==================== */
 
 .status-section {
@@ -179,27 +197,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-}
-
-.status-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
-
-.status-icon.success {
-    background: rgba(0, 231, 122, 0.2);
-    color: #00E77A;
-}
-
-.status-icon.error {
-    background: rgba(231, 76, 60, 0.2);
-    color: #e74c3c;
+    gap: 8px;
 }
 
 .status-text {
@@ -216,4 +214,110 @@ body {
 
 .status-text.error {
     color: #e74c3c;
+}
+
+/* ==================== СТРЕЛКИ СКРОЛЛА ==================== */
+
+.scroll-arrow {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    animation: bounce 2s infinite;
+    z-index: 10;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.scroll-arrow:active {
+    opacity: 1;
+}
+
+.scroll-arrow.down {
+    bottom: 20px;
+}
+
+.scroll-arrow.up {
+    top: 20px;
+}
+
+.scroll-arrow svg {
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ==================== ЭКРАН 2: ИНФОРМАЦИЯ ==================== */
+
+#infoScreen {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.info-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 24px;
+    position: relative;
+}
+
+.info-title {
+    color: #ffd700;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.info-list {
+    list-style: none;
+    counter-reset: item;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.info-list li {
+    counter-increment: item;
+    color: #d0daf0;
+    font-size: 14px;
+    line-height: 1.5;
+    padding-left: 32px;
+    position: relative;
+}
+
+.info-list li::before {
+    content: counter(item);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #f0883e, #f5c842);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0a0f1a;
+}
+
+.info-coming-soon {
+    color: #6b7daa;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 10px;
 }
