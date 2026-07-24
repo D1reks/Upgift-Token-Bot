@@ -111,7 +111,7 @@ function initBackground() {
 
     // P A R T I C L E S
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 60;
+    const particlesCount = 160;
     const particlesPositions = new Float32Array(particlesCount * 3);
     
     for (let i = 0; i < particlesCount; i++) {
