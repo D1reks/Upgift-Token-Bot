@@ -1,3 +1,5 @@
+// ==================== app.js ====================
+
 // ==================== КОНФИГУРАЦИЯ ====================
 
 const API_URL = 'https://crash-game-production-6c97.up.railway.app';
@@ -11,9 +13,7 @@ if (window.Telegram && window.Telegram.WebApp) {
     tg.expand();
     
     if (typeof tg.requestFullscreen === 'function') {
-        try {
-            tg.requestFullscreen();
-        } catch (e) {}
+        try { tg.requestFullscreen(); } catch (e) {}
     }
     
     tg.enableClosingConfirmation();
@@ -38,42 +38,74 @@ async function switchScreen(targetId) {
         return;
     }
     
-    // 🔥 Отдаляем камеру (куб уходит вглубь)
+    // 🔥 Отдаляем камеру
     if (typeof window.zoomOutCamera === 'function') {
         await window.zoomOutCamera();
     }
     
-    // Плавно скрываем текущий UI
-    currentEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-    currentEl.style.opacity = '0';
-    currentEl.style.transform = 'scale(0.95)';
-    
-    await new Promise(r => setTimeout(r, 400));
-    
-    // Меняем экраны
-    currentEl.classList.remove('active');
-    currentEl.style.display = 'none';
-    currentEl.style.transition = '';
-    currentEl.style.transform = '';
-    
-    // Показываем новый UI
-    targetEl.classList.add('active');
-    targetEl.style.display = 'flex';
-    targetEl.style.opacity = '0';
-    targetEl.style.transform = 'scale(1.05)';
-    targetEl.style.transition = 'none';
-    
-    targetEl.offsetHeight; // Форсируем рефлоу
-    
-    targetEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    targetEl.style.opacity = '1';
-    targetEl.style.transform = 'scale(1)';
-    
-    await new Promise(r => setTimeout(r, 500));
-    
-    // 🔥 Приближаем камеру обратно
-    if (typeof window.zoomInCamera === 'function') {
-        await window.zoomInCamera();
+    // Если переходим на infoScreen — камера остаётся отдалённой
+    if (targetId === 'infoScreen') {
+        // Плавно скрываем текущий UI
+        currentEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        currentEl.style.opacity = '0';
+        currentEl.style.transform = 'scale(0.95)';
+        
+        await new Promise(r => setTimeout(r, 400));
+        
+        currentEl.classList.remove('active');
+        currentEl.style.display = 'none';
+        currentEl.style.transition = '';
+        currentEl.style.transform = '';
+        
+        // Показываем infoScreen
+        targetEl.classList.add('active');
+        targetEl.style.display = 'flex';
+        targetEl.style.opacity = '0';
+        targetEl.style.transform = 'scale(1.05)';
+        targetEl.style.transition = 'none';
+        
+        targetEl.offsetHeight;
+        
+        targetEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        targetEl.style.opacity = '1';
+        targetEl.style.transform = 'scale(1)';
+        
+        await new Promise(r => setTimeout(r, 500));
+        
+        // 🔥 НЕ приближаем камеру — оставляем отдалённой
+    } else {
+        // Переход на app — приближаем камеру
+        // Плавно скрываем infoScreen
+        currentEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        currentEl.style.opacity = '0';
+        currentEl.style.transform = 'scale(0.95)';
+        
+        await new Promise(r => setTimeout(r, 400));
+        
+        currentEl.classList.remove('active');
+        currentEl.style.display = 'none';
+        currentEl.style.transition = '';
+        currentEl.style.transform = '';
+        
+        // Показываем app
+        targetEl.classList.add('active');
+        targetEl.style.display = 'flex';
+        targetEl.style.opacity = '0';
+        targetEl.style.transform = 'scale(1.05)';
+        targetEl.style.transition = 'none';
+        
+        targetEl.offsetHeight;
+        
+        targetEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        targetEl.style.opacity = '1';
+        targetEl.style.transform = 'scale(1)';
+        
+        await new Promise(r => setTimeout(r, 400));
+        
+        // 🔥 Приближаем камеру
+        if (typeof window.zoomInCamera === 'function') {
+            await window.zoomInCamera();
+        }
     }
     
     targetEl.style.transition = '';
@@ -119,23 +151,19 @@ class PreregisterApp {
         this.btn.addEventListener('click', () => this.handlePreregister());
         this.checkStatus();
         
-        // 🔥 Навигация по стрелкам
+        // Навигация по стрелкам
         const scrollDownArrow = document.getElementById('scrollDownArrow');
         const scrollUpArrow = document.getElementById('scrollUpArrow');
         
         if (scrollDownArrow) {
-            scrollDownArrow.addEventListener('click', () => {
-                switchScreen('infoScreen');
-            });
+            scrollDownArrow.addEventListener('click', () => switchScreen('infoScreen'));
         }
         
         if (scrollUpArrow) {
-            scrollUpArrow.addEventListener('click', () => {
-                switchScreen('app');
-            });
+            scrollUpArrow.addEventListener('click', () => switchScreen('app'));
         }
         
-        // 🔥 Поддержка свайпов на мобильных
+        // Свайпы
         let touchStartY = 0;
         document.addEventListener('touchstart', (e) => {
             touchStartY = e.touches[0].clientY;
@@ -167,13 +195,11 @@ class PreregisterApp {
         }
     }
     
-    showSuccess(text) {
-        this.statusSection.style.display = 'flex';
-        this.statusText.className = 'status-text success';
-        this.statusText.textContent = text;
+    showSuccess() {
         this.btn.className = 'preregister-btn success';
-        this.btnText.textContent = '✓ Вы зарегистрированы';
+        this.btnText.textContent = 'ВЫ ЗАРЕГИСТРИРОВАНЫ';
         this.btn.disabled = true;
+        this.statusSection.style.display = 'none';
     }
     
     showError(text) {
@@ -201,7 +227,7 @@ class PreregisterApp {
                 
                 if (d.registered) {
                     this.isRegistered = true;
-                    this.showSuccess(`Вы успешно зарегистрированы!\nВаш депозит: ${d.totalDeposit.toLocaleString()} ⭐`);
+                    this.showSuccess();
                 }
             }
         } catch (e) {}
@@ -232,7 +258,7 @@ class PreregisterApp {
             
             if (d.success) {
                 this.isRegistered = true;
-                this.showSuccess(`Успешная регистрация!\nВаш депозит: ${d.totalDeposit.toLocaleString()} ⭐`);
+                this.showSuccess();
             } else {
                 this.btn.className = 'preregister-btn error';
                 this.btnText.textContent = 'Недостаточно депозита';
