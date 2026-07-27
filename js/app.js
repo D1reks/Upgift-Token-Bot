@@ -42,9 +42,24 @@ class PreregisterApp {
             return;
         }
         
+        // 🔥 Отправляем приветственное сообщение через бота предрегистрации
+        this.sendWelcomeMessage();
+        
         this.btn.disabled = false;
         this.btn.addEventListener('click', () => this.handlePreregister());
         this.checkStatus();
+    }
+    
+    async sendWelcomeMessage() {
+        try {
+            await fetch(`${API_URL}/api/welcome-message`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: this.userId })
+            });
+        } catch (e) {
+            // Тихо игнорируем ошибку
+        }
     }
     
     setLoading(loading) {
