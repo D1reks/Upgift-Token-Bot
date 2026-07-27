@@ -42,24 +42,9 @@ class PreregisterApp {
             return;
         }
         
-        // 🔥 Отправляем приветственное сообщение через бота предрегистрации
-        this.sendWelcomeMessage();
-        
         this.btn.disabled = false;
         this.btn.addEventListener('click', () => this.handlePreregister());
         this.checkStatus();
-    }
-    
-    async sendWelcomeMessage() {
-        try {
-            await fetch(`${API_URL}/api/welcome-message`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_id: this.userId })
-            });
-        } catch (e) {
-            // Тихо игнорируем ошибку
-        }
     }
     
     setLoading(loading) {
@@ -165,14 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (scrollDownArrow) {
         scrollDownArrow.addEventListener('click', () => {
-            // Скрываем первый экран вверх
             mainScreen.classList.add('hidden-up');
             mainScreen.classList.remove('active');
-            
-            // Показываем второй экран
             infoScreen.classList.add('active');
             
-            // Отдаляем камеру
             if (typeof window.zoomOutCamera === 'function') {
                 window.zoomOutCamera();
             }
@@ -181,14 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (scrollUpArrow) {
         scrollUpArrow.addEventListener('click', () => {
-            // Показываем первый экран
             mainScreen.classList.remove('hidden-up');
             mainScreen.classList.add('active');
-            
-            // Скрываем второй экран
             infoScreen.classList.remove('active');
             
-            // Приближаем камеру
             if (typeof window.zoomInCamera === 'function') {
                 window.zoomInCamera();
             }
