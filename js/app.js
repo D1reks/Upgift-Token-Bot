@@ -1,5 +1,3 @@
-// ==================== app.js ====================
-
 // ==================== КОНФИГУРАЦИЯ ====================
 
 const API_URL = 'https://crash-game-production-6c97.up.railway.app';
@@ -11,106 +9,6 @@ if (window.Telegram && window.Telegram.WebApp) {
     tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-    
-    if (typeof tg.requestFullscreen === 'function') {
-        try { tg.requestFullscreen(); } catch (e) {}
-    }
-    
-    tg.enableClosingConfirmation();
-    tg.setHeaderColor('#000000');
-    tg.setBackgroundColor('#000000');
-}
-
-// ==================== НАВИГАЦИЯ МЕЖДУ ЭКРАНАМИ ====================
-
-let currentScreen = 'app';
-let isTransitioning = false;
-
-async function switchScreen(targetId) {
-    if (targetId === currentScreen || isTransitioning) return;
-    isTransitioning = true;
-    
-    const currentEl = document.getElementById(currentScreen);
-    const targetEl = document.getElementById(targetId);
-    
-    if (!currentEl || !targetEl) {
-        isTransitioning = false;
-        return;
-    }
-    
-    // 🔥 Отдаляем камеру
-    if (typeof window.zoomOutCamera === 'function') {
-        await window.zoomOutCamera();
-    }
-    
-    // Если переходим на infoScreen — камера остаётся отдалённой
-    if (targetId === 'infoScreen') {
-        // Плавно скрываем текущий UI
-        currentEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-        currentEl.style.opacity = '0';
-        currentEl.style.transform = 'scale(0.95)';
-        
-        await new Promise(r => setTimeout(r, 400));
-        
-        currentEl.classList.remove('active');
-        currentEl.style.display = 'none';
-        currentEl.style.transition = '';
-        currentEl.style.transform = '';
-        
-        // Показываем infoScreen
-        targetEl.classList.add('active');
-        targetEl.style.display = 'flex';
-        targetEl.style.opacity = '0';
-        targetEl.style.transform = 'scale(1.05)';
-        targetEl.style.transition = 'none';
-        
-        targetEl.offsetHeight;
-        
-        targetEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        targetEl.style.opacity = '1';
-        targetEl.style.transform = 'scale(1)';
-        
-        await new Promise(r => setTimeout(r, 500));
-        
-        // 🔥 НЕ приближаем камеру — оставляем отдалённой
-    } else {
-        // Переход на app — приближаем камеру
-        // Плавно скрываем infoScreen
-        currentEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-        currentEl.style.opacity = '0';
-        currentEl.style.transform = 'scale(0.95)';
-        
-        await new Promise(r => setTimeout(r, 400));
-        
-        currentEl.classList.remove('active');
-        currentEl.style.display = 'none';
-        currentEl.style.transition = '';
-        currentEl.style.transform = '';
-        
-        // Показываем app
-        targetEl.classList.add('active');
-        targetEl.style.display = 'flex';
-        targetEl.style.opacity = '0';
-        targetEl.style.transform = 'scale(1.05)';
-        targetEl.style.transition = 'none';
-        
-        targetEl.offsetHeight;
-        
-        targetEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        targetEl.style.opacity = '1';
-        targetEl.style.transform = 'scale(1)';
-        
-        await new Promise(r => setTimeout(r, 400));
-        
-        // 🔥 Приближаем камеру
-        if (typeof window.zoomInCamera === 'function') {
-            await window.zoomInCamera();
-        }
-    }
-    
-    targetEl.style.transition = '';
-    currentScreen = targetId;
-    isTransitioning = false;
 }
 
 // ==================== ПРИЛОЖЕНИЕ ====================
@@ -124,8 +22,6 @@ class PreregisterApp {
         this.statusText = document.getElementById('statusText');
         
         this.userId = null;
-        this.username = null;
-        this.totalDeposit = 0;
         this.isRegistered = false;
         
         this.init();
@@ -133,7 +29,7 @@ class PreregisterApp {
     
     init() {
         if (!tg?.initData) {
-            this.showError('Приложение доступно только в Telegram');
+            this.showStatus('Приложение доступно только в Telegram');
             return;
         }
         
@@ -141,46 +37,14 @@ class PreregisterApp {
             const params = new URLSearchParams(tg.initData);
             const user = JSON.parse(params.get('user'));
             this.userId = user.id;
-            this.username = user.username || `id${user.id}`;
         } catch (e) {
-            this.showError('Ошибка авторизации');
+            this.showStatus('Ошибка авторизации');
             return;
         }
         
         this.btn.disabled = false;
         this.btn.addEventListener('click', () => this.handlePreregister());
         this.checkStatus();
-        
-        // Навигация по стрелкам
-        const scrollDownArrow = document.getElementById('scrollDownArrow');
-        const scrollUpArrow = document.getElementById('scrollUpArrow');
-        
-        if (scrollDownArrow) {
-            scrollDownArrow.addEventListener('click', () => switchScreen('infoScreen'));
-        }
-        
-        if (scrollUpArrow) {
-            scrollUpArrow.addEventListener('click', () => switchScreen('app'));
-        }
-        
-        // Свайпы
-        let touchStartY = 0;
-        document.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-        });
-        
-        document.addEventListener('touchend', (e) => {
-            const touchEndY = e.changedTouches[0].clientY;
-            const diff = touchStartY - touchEndY;
-            
-            if (Math.abs(diff) > 50) {
-                if (diff > 0 && currentScreen === 'app') {
-                    switchScreen('infoScreen');
-                } else if (diff < 0 && currentScreen === 'infoScreen') {
-                    switchScreen('app');
-                }
-            }
-        });
     }
     
     setLoading(loading) {
@@ -188,24 +52,27 @@ class PreregisterApp {
             this.btn.disabled = true;
             this.btnText.textContent = 'Загрузка...';
             this.btnLoader.style.display = 'inline-block';
-        } else {
+        } else if (!this.isRegistered) {
             this.btn.disabled = false;
             this.btnText.textContent = 'Предрегистрация';
             this.btnLoader.style.display = 'none';
         }
     }
     
-    showSuccess() {
-        this.btn.className = 'preregister-btn success';
-        this.btnText.textContent = 'ВЫ ЗАРЕГИСТРИРОВАНЫ';
+    setRegistered() {
+        this.isRegistered = true;
+        this.btn.className = 'preregister-btn registered';
+        this.btnText.textContent = 'Вы зарегистрированы';
         this.btn.disabled = true;
+        this.btnLoader.style.display = 'none';
         this.statusSection.style.display = 'none';
     }
     
-    showError(text) {
-        this.statusSection.style.display = 'flex';
-        this.statusText.className = 'status-text error';
-        this.statusText.textContent = text;
+    showStatus(text) {
+        if (this.statusSection && this.statusText) {
+            this.statusSection.style.display = 'block';
+            this.statusText.textContent = text;
+        }
     }
     
     async checkStatus() {
@@ -223,11 +90,9 @@ class PreregisterApp {
             
             if (r.ok) {
                 const d = await r.json();
-                this.totalDeposit = d.totalDeposit || 0;
                 
                 if (d.registered) {
-                    this.isRegistered = true;
-                    this.showSuccess();
+                    this.setRegistered();
                 }
             }
         } catch (e) {}
@@ -235,7 +100,7 @@ class PreregisterApp {
     
     async handlePreregister() {
         if (!tg?.initData) {
-            this.showError('Приложение доступно только в Telegram');
+            this.showStatus('Приложение доступно только в Telegram');
             return;
         }
         
@@ -257,51 +122,20 @@ class PreregisterApp {
             const d = await r.json();
             
             if (d.success) {
-                this.isRegistered = true;
-                this.showSuccess();
+                this.setRegistered();
             } else {
-                this.btn.className = 'preregister-btn error';
-                this.btnText.textContent = 'Недостаточно депозита';
-                
-                if (d.totalDeposit !== undefined) {
-                    this.totalDeposit = d.totalDeposit;
-                    const remaining = Math.max(0, 1000 - d.totalDeposit);
-                    this.showError(
-                        `Недостаточно депозита\n` +
-                        `Ваш депозит: ${d.totalDeposit.toLocaleString()} ⭐\n` +
-                        `Осталось: ${remaining.toLocaleString()} ⭐`
-                    );
-                } else {
-                    this.showError(d.error || 'Ошибка регистрации');
-                }
-                
-                setTimeout(() => {
-                    if (!this.isRegistered) {
-                        this.btn.className = 'preregister-btn';
-                        this.btnText.textContent = 'Предрегистрация';
-                        this.statusSection.style.display = 'none';
-                    }
-                }, 3000);
+                this.showStatus('Вы не соответствуете критериям для предрегистрации');
+                this.setLoading(false);
             }
         } catch (e) {
-            this.showError('Ошибка соединения');
-            
-            setTimeout(() => {
-                if (!this.isRegistered) {
-                    this.btn.className = 'preregister-btn';
-                    this.btnText.textContent = 'Предрегистрация';
-                    this.statusSection.style.display = 'none';
-                }
-            }, 3000);
+            this.showStatus('Ошибка соединения');
+            this.setLoading(false);
         }
-        
-        this.setLoading(false);
     }
 }
 
 // ==================== ЗАПУСК ====================
 
-<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', () => {
     const app = new PreregisterApp();
 });
@@ -338,6 +172,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-=======
-const app = new PreregisterApp();
->>>>>>> 01308aa05e76176149da57682873d2ada52173a6
