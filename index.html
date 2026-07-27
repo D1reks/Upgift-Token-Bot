@@ -12,53 +12,56 @@
 <body>
     <div id="stage" data-js="stage"></div>
     
-    <!-- ЭКРАН 1: Предрегистрация -->
-    <div id="app" class="screen active">
-        <div class="container">
-            <div class="logo-section">
-                <h1 class="glowing-title">U<span class="letter-p">P</span>GIFT</h1>
-            </div>
-            <div class="subtitle-section">
-                <p class="subtitle">Предрегистрация на Whitelist токена $UG</p>
-            </div>
-            <div class="button-section">
-                <button class="preregister-btn" id="preregisterBtn" disabled>
-                    <span class="btn-text" id="btnText">Предрегистрация</span>
-                    <span class="btn-loader" id="btnLoader" style="display:none;"></span>
-                </button>
-            </div>
-            <div class="status-section" id="statusSection" style="display:none;">
-                <p class="status-text" id="statusText"></p>
-            </div>
-            <!-- 🔥 Стрелка вниз -->
-            <div class="scroll-arrow down" id="scrollDownArrow">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+    <!-- Основной контейнер -->
+    <div id="main-wrapper">
+        <!-- ЭКРАН 1: Предрегистрация -->
+        <div id="app" class="screen active">
+            <div class="container">
+                <div class="logo-section">
+                    <h1 class="glowing-title">U<span class="letter-p">P</span>GIFT</h1>
+                </div>
+                <div class="subtitle-section">
+                    <p class="subtitle">Предрегистрация на распределение будущего токена $UG</p>
+                </div>
+                <div class="button-section">
+                    <button class="preregister-btn" id="preregisterBtn" disabled>
+                        <span class="btn-text" id="btnText">Предрегистрация</span>
+                        <span class="btn-loader" id="btnLoader" style="display:none;"></span>
+                    </button>
+                </div>
+                <div class="status-section" id="statusSection" style="display:none;">
+                    <p class="status-text" id="statusText"></p>
+                </div>
+                <!-- Стрелка вниз -->
+                <div class="scroll-arrow down" id="scrollDownArrow">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <!-- 🔥 ЭКРАН 2: Информация о токене -->
-    <div id="infoScreen" class="screen">
-        <div class="info-container">
-            <!-- Стрелка вверх -->
-            <div class="scroll-arrow up" id="scrollUpArrow">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="18 15 12 9 6 15"></polyline>
-                </svg>
+        
+        <!-- ЭКРАН 2: Информация о токене -->
+        <div id="infoScreen" class="screen">
+            <div class="info-container">
+                <!-- Стрелка вверх -->
+                <div class="scroll-arrow up" id="scrollUpArrow">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                </div>
+                
+                <h2 class="info-title">Что такое токен $UG</h2>
+                
+                <ol class="info-list">
+                    <li>Будущий токен $UG является официальной криптовалютой проекта UPGIFT</li>
+                    <li>Предрегистрация доступна всем юзерам с депозитом от 1000 STARS</li>
+                    <li>В пул ликвидности токена будут дополнительно добавляться средства равные 20% от потраченых STARS в проекте UPGIFT</li>
+                    <li>На конечное распределение токенов будет влиять активность юзера в проекте UPGIFT</li>
+                </ol>
+                
+                <p class="info-coming-soon">Coming Soon...</p>
             </div>
-            
-            <h2 class="info-title">Что такое токен $UG</h2>
-            
-            <ol class="info-list">
-                <li>Будущий токен $UG является официальной криптовалютой проекта UPGIFT</li>
-                <li>Предрегистрация доступна всем юзерам с депозитом от 1000 STARS</li>
-                <li>В пул ликвидности токена будут дополнительно добавляться средства равные 20% от потраченых STARS в проекте UPGIFT</li>
-                <li>На конечное распределение токенов будет влиять активность юзера в проекте UPGIFT</li>
-            </ol>
-            
-            <p class="info-coming-soon">Coming Soon...</p>
         </div>
     </div>
     

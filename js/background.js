@@ -111,7 +111,7 @@ function initBackground() {
 
     // P A R T I C L E S
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 60;
+    const particlesCount = 160;
     const particlesPositions = new Float32Array(particlesCount * 3);
     
     for (let i = 0; i < particlesCount; i++) {
@@ -184,20 +184,26 @@ function initBackground() {
     }
     updateGlow();
 
-    // 🔥 ФУНКЦИЯ ОТДАЛЕНИЯ/ПРИБЛИЖЕНИЯ КАМЕРЫ
+    // 🔥 ФУНКЦИИ ДЛЯ ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ
     window.zoomOutCamera = function() {
-        gsap.to(camera.position, {
-            z: 300,
-            duration: 1.2,
-            ease: "power2.inOut"
+        return new Promise((resolve) => {
+            gsap.to(camera.position, {
+                z: 300,
+                duration: 1.2,
+                ease: "power2.inOut",
+                onComplete: resolve
+            });
         });
     };
     
     window.zoomInCamera = function() {
-        gsap.to(camera.position, {
-            z: 150,
-            duration: 1.2,
-            ease: "power2.inOut"
+        return new Promise((resolve) => {
+            gsap.to(camera.position, {
+                z: 150,
+                duration: 1.2,
+                ease: "power2.inOut",
+                onComplete: resolve
+            });
         });
     };
 

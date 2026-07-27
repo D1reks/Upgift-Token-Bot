@@ -11,19 +11,19 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 body {
-    background-color: #000;
-    min-height: 100vh;
-    min-height: 100dvh;
+    background: #000;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed;
 }
 
-/* 3D Фон */
+/* 3D фон на весь экран */
 #stage {
     position: fixed;
     top: 0;
@@ -31,27 +31,40 @@ body {
     width: 100%;
     height: 100%;
     z-index: 0;
+    pointer-events: none;
 }
 
-#stage canvas {
-    display: block;
-}
-
-/* Контент поверх фона */
-#app {
+/* Основной контейнер — ограничен по ширине */
+#main-wrapper {
     position: relative;
     z-index: 1;
     width: 100%;
     max-width: 450px;
     height: 100vh;
     height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    pointer-events: none;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
-#app .container {
-    pointer-events: all;
+/* Экраны */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Экран 1 */
+#app {
+    background: transparent;
 }
 
 .container {
@@ -65,125 +78,26 @@ body {
     padding: 40px 24px;
 }
 
-/* ==================== АНИМАЦИИ ПОЯВЛЕНИЯ ==================== */
+/* ==================== ЛОГОТИП ==================== */
 
 .logo-section {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-
-.subtitle-section {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
-}
-
-.button-section {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
-}
-
-.status-section {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
-}
-
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ==================== GLOWING ЗАГОЛОВОК ==================== */
 
 .glowing-title {
-    position: relative;
     color: #ffffff;
-    font-family: "Raleway", -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 48px;
-    font-weight: 900;
-    letter-spacing: 12px;
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: 6px;
     text-transform: uppercase;
-    text-align: center;
-    background: none;
-    border: none;
-    cursor: default;
-    text-shadow: 
-        0 0 7px rgba(255, 255, 255, 0.6),
-        0 0 10px rgba(255, 255, 255, 0.4),
-        0 0 21px rgba(255, 255, 255, 0.3),
-        0 0 42px rgba(255, 255, 255, 0.2),
-        0 0 82px rgba(255, 255, 255, 0.15),
-        0 0 92px rgba(255, 255, 255, 0.1);
-    animation: text-flicker 3s linear infinite;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
 }
 
-.glowing-title::after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    right: 0;
-    height: 4px;
-    opacity: 0.7;
-    filter: blur(8px);
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 
-        0 0 10px rgba(255, 255, 255, 0.8),
-        0 0 20px rgba(255, 255, 255, 0.6),
-        0 0 40px rgba(255, 255, 255, 0.4),
-        0 0 80px rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: perspective(2em) rotateX(85deg) scale(1, 0.5);
-    animation: glow-line-flicker 3s linear infinite;
-}
-
-.glowing-title .letter-p {
-    animation: faulty-flicker 2s linear infinite;
-}
-
-@keyframes text-flicker {
-    0% { opacity: 0.85; }
-    2% { opacity: 1; }
-    8% { opacity: 0.85; }
-    9% { opacity: 1; }
-    12% { opacity: 0.85; }
-    20% { opacity: 1; }
-    25% { opacity: 0.9; }
-    30% { opacity: 1; }
-    70% { opacity: 0.9; }
-    72% { opacity: 0.8; }
-    77% { opacity: 0.95; }
-    100% { opacity: 1; }
-}
-
-@keyframes glow-line-flicker {
-    0% { opacity: 0.4; }
-    2% { opacity: 0.8; }
-    4% { opacity: 0.4; }
-    8% { opacity: 0.8; }
-    70% { opacity: 0.6; }
-    100% { opacity: 0.8; }
-}
-
-@keyframes faulty-flicker {
-    0% { opacity: 0.3; }
-    2% { opacity: 0.3; }
-    4% { opacity: 0.8; }
-    19% { opacity: 0.8; }
-    21% { opacity: 0.3; }
-    23% { opacity: 1; }
-    80% { opacity: 0.8; }
-    83% { opacity: 0.6; }
-    87% { opacity: 1; }
+.letter-p {
+    color: #ffd700;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3);
 }
 
 /* ==================== ПОДЗАГОЛОВОК ==================== */
@@ -194,10 +108,10 @@ body {
 
 .subtitle {
     color: #a0b4e0;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
-    letter-spacing: 0.5px;
-    line-height: 1.5;
+    letter-spacing: 1px;
+    line-height: 1.4;
 }
 
 /* ==================== КНОПКА ==================== */
@@ -206,7 +120,9 @@ body {
     width: 100%;
     max-width: 300px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 .preregister-btn {
@@ -221,13 +137,14 @@ body {
     letter-spacing: 2px;
     background: #ffffff;
     color: #0a0f1a;
-    transition: all 0.3s ease;
+    transition: all 0.25s;
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(255, 255, 255, 0.1);
     -webkit-tap-highlight-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    position: relative;
 }
 
 .preregister-btn:active {
@@ -241,18 +158,16 @@ body {
     box-shadow: none;
 }
 
-.preregister-btn.registered {
+.preregister-btn.success {
     background: linear-gradient(135deg, #00E77A, #00FBDD);
     color: #0a0f1a;
     box-shadow: 0 0 30px rgba(0, 231, 122, 0.4);
-    opacity: 1;
-    font-size: 14px;
-    letter-spacing: 1px;
 }
 
-.preregister-btn.registered:disabled {
-    opacity: 1;
-    cursor: default;
+.preregister-btn.error {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #ffffff;
+    box-shadow: 0 0 30px rgba(231, 76, 60, 0.4);
 }
 
 .btn-text {
@@ -267,6 +182,8 @@ body {
     border-top-color: #0a0f1a;
     border-radius: 50%;
     animation: btn-spin 0.7s linear infinite;
+    position: relative;
+    z-index: 1;
 }
 
 @keyframes btn-spin {
@@ -277,154 +194,130 @@ body {
 
 .status-section {
     text-align: center;
-    max-width: 280px;
-}
-
-.status-text {
-    color: #e74c3c;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.5;
-}
-
-/* ==================== ДВА ЭКРАНА ==================== */
-
-.screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.screen.active {
-    pointer-events: all;
-}
-
-.screen .container,
-.screen .info-container {
-    pointer-events: all;
-}
-
-/* Экран 1 — видимый */
-#app {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* Экран 1 — скрыт вверх */
-#app.hidden-up {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* Экран 2 — скрыт снизу */
-#infoScreen {
-    transform: translateY(100%);
-    opacity: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
 }
 
-/* Экран 2 — видимый */
-#infoScreen.active {
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: all;
+.status-text {
+    color: #d0daf0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: pre-line;
 }
 
-/* ==================== СТРЕЛКИ ==================== */
+.status-text.success {
+    color: #00E77A;
+}
+
+.status-text.error {
+    color: #e74c3c;
+}
+
+/* ==================== СТРЕЛКИ СКРОЛЛА ==================== */
 
 .scroll-arrow {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     cursor: pointer;
-    padding: 12px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: arrow-bounce 2s ease-in-out infinite;
+    animation: bounce 2s infinite;
+    z-index: 10;
+    opacity: 0.7;
+    transition: opacity 0.3s;
 }
 
 .scroll-arrow:active {
-    background: rgba(255, 255, 255, 0.15);
+    opacity: 1;
 }
 
 .scroll-arrow.down {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 20px;
 }
 
 .scroll-arrow.up {
-    margin-bottom: 40px;
+    top: 20px;
 }
 
-@keyframes arrow-bounce {
+.scroll-arrow svg {
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+}
+
+@keyframes bounce {
     0%, 100% { transform: translateX(-50%) translateY(0); }
     50% { transform: translateX(-50%) translateY(8px); }
 }
 
-.scroll-arrow.up {
-    animation: arrow-bounce-up 2s ease-in-out infinite;
-}
+/* ==================== ЭКРАН 2: ИНФОРМАЦИЯ ==================== */
 
-@keyframes arrow-bounce-up {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+#infoScreen {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
-
-/* ==================== ЭКРАН ИНФОРМАЦИИ ==================== */
 
 .info-container {
     width: 100%;
-    max-width: 400px;
-    padding: 40px 24px;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 24px;
+    position: relative;
 }
 
 .info-title {
-    color: #ffffff;
+    color: #ffd700;
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: 1px;
     text-align: center;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
 }
 
 .info-list {
     list-style: none;
+    counter-reset: item;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 0;
+    gap: 16px;
     width: 100%;
 }
 
 .info-list li {
+    counter-increment: item;
     color: #d0daf0;
-    font-size: 15px;
-    line-height: 1.7;
-    text-align: center;
+    font-size: 14px;
+    line-height: 1.5;
+    padding-left: 32px;
+    position: relative;
+}
+
+.info-list li::before {
+    content: counter(item);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #f0883e, #f5c842);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0a0f1a;
 }
 
 .info-coming-soon {
     color: #6b7daa;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-top: 12px;
-    text-align: center;
+    margin-top: 10px;
 }
